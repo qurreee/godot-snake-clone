@@ -24,10 +24,12 @@ signal moved(new_pos: Vector2, length: int)
 signal is_collide(next_pos: Vector2)
 var is_next_safe: bool = true
 
-signal splitted(new_head: Head)
+
+# TODO store next movement direction
+# add gradual movement
+# sprite 
 
 
-	
 func _input(event: InputEvent) -> void:
 	var input_dir := Vector2.ZERO
 
@@ -82,40 +84,6 @@ func add_body()-> void:
 	bodies.append(new_body)
 	
 
-func split_body()-> void:
-	var next_pos = position + direction * Globals.CELL_SIZE
-	var hit_index: int = -1
-	for i in range(bodies.size()):
-		if bodies[i].position == next_pos:
-			hit_index = i
-			break
-	
-	if hit_index == -1:
-		return
-	
-	if hit_index >= bodies.size() - 1:#delete last node
-		return
-	
-	var new_head_pos: Vector2 = bodies[hit_index + 1].position
-	var new_head = HEADSCENE.instantiate()
-	new_head.position = new_head_pos
-	new_head.direction = -direction
-	get_parent().add_child(new_head)
-	splitted.emit(new_head)
-	direction_modifier *= -1
-	
-	var tail_nodes: Array = bodies.slice(hit_index + 1, bodies.size())
-	
-	for node: Body in tail_nodes:
-		new_head.bodies.append(node)
-	
-	var colliding = bodies[hit_index]
-	if colliding.get_parent():
-		colliding.get_parent().remove_child(colliding)
-	colliding.queue_free()
-	
-	bodies = bodies.slice(0,hit_index)
-	print("Split at index: ", hit_index, " -> new head with ", new_head.bodies.size(), " bodies.ss")
 	
 	
 func get_cell_index(pos: Vector2)-> int:

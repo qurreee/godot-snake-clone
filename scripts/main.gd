@@ -23,7 +23,6 @@ func _ready() -> void:
 	head.position = Vector2(1,1) * Globals.CELL_SIZE
 	head.moved.connect(update_cell)
 	head.is_collide.connect(is_next_occupied)
-	head.splitted.connect(add_new_head)
 	#initial body length
 	for i in 6:
 		head.add_body()
@@ -67,7 +66,6 @@ func rand_position() -> Vector2:
 
 func is_cell_occupied(pos: Vector2) -> bool:
 	var index = get_cell_index(pos)
-	#TODO limit play area
 	if index >= 0 and index < cells.size():
 		return cells[index].is_occupied
 	return false
@@ -77,8 +75,6 @@ func is_next_occupied(pos: Vector2) -> void:
 	if t:
 		var index = get_cell_index(pos)
 		if cells[index].is_snake_occupied():
-			var count_left = cells[index].occupied_for
-			split_body()
 			head.is_next_safe = false
 	else:
 		head.is_next_safe = true
@@ -99,13 +95,8 @@ func get_cell_index(pos: Vector2)-> int:
 	var grid_y = int(pos.y / Globals.CELL_SIZE)
 	return grid_y * int(Globals.PLAY_AREA.x) + grid_x
 
-func split_body()-> void:
-	head.split_body()
 
-func add_new_head(new_head: Head)-> void:
-	h.append(new_head)
-	new_head.moved.connect(update_cell)
-	new_head.is_collide.connect(is_next_occupied)
-	new_head.splitted.connect(add_new_head)
+
+
 	
 	
